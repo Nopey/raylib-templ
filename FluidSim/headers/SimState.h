@@ -1,8 +1,4 @@
-/* Header file for simulation state class */
-
-// Preprocessor statements
-#ifndef SIMSTATE_H
-#define SIMSTATE_H
+#pragma once
 
 #include <string>
 
@@ -135,6 +131,3 @@ class SimState
         void VelocityStep(float);
         void TemperatureStep(float);
 };
-
-// Preprocessor close statement
-#endif

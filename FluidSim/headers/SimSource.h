@@ -1,9 +1,4 @@
-
-// Preprocessor statements
-#ifndef SIMSOURCE_H
-#define SIMSOURCE_H
-
-// Include statements
+#pragma once
 #include <list>
 #include <random>
 #include "SimState.h"
@@ -146,6 +141,3 @@ class SimSource
 
 // Helper method for normal distribution generation
 float RandomNormal(float mean, float dev);
-
-// Closing preprocessor statement
-#endif
