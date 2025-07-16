@@ -56,18 +56,6 @@ int main(void)
         BeginDrawing();
             ClearBackground(RAYWHITE);
             int const pix_size = 4;
-#if 0
-            for(int x = 0; x < sim_texWidth; x++){
-                for(int y = 0; y < sim_texWidth; y++){
-                    Color color;
-                    color.r = sim_state.fields.temp[x + y * sim_texWidth] / 5.0f;
-                    color.g = sim_state.fields.dens[x + y * sim_texWidth] * 1000.0f;
-                    color.b = 0;
-                    color.a = 255;
-                    DrawRectangle(pix_size * x, pix_size * (sim_texWidth - y), pix_size, pix_size, color);
-                }
-            }
-#else
             for(int x = 0; x < sim_texWidth; x++){
                 for(int y = 0; y < sim_texWidth; y++){
                     int i = x + y * sim_texWidth;
@@ -77,11 +65,14 @@ int main(void)
                     // [i3 + 2] = 0;
                 }
             }
+#ifdef WEB_PLATFORM
             // HACK: raylib UpdateTexture doesn't work on web, so recreate the texture every frame!
             UnloadTexture(texture);
             texture = LoadTextureFromImage(img);
-            DrawTextureEx(texture, Vector2{0, 0}, 0.0f, pix_size, WHITE);
+#else
+            UpdateTexture(texture, imageData);
 #endif
+            DrawTextureEx(texture, Vector2{0, 0}, 0.0f, pix_size, WHITE);
             DrawText("Congrats! You created your first window!", 190, 200, 20, LIGHTGRAY);
         EndDrawing();
     }
