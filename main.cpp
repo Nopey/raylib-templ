@@ -65,7 +65,7 @@ int main(void)
                     // [i3 + 2] = 0;
                 }
             }
-#ifdef WEB_PLATFORM
+#ifdef PLATFORM_WEB
             // HACK: raylib UpdateTexture doesn't work on web, so recreate the texture every frame!
             UnloadTexture(texture);
             texture = LoadTextureFromImage(img);
