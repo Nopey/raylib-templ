@@ -77,7 +77,9 @@ int main(void)
                     // [i3 + 2] = 0;
                 }
             }
-            UpdateTexture(texture, imageData);
+            // HACK: raylib UpdateTexture doesn't work on web, so recreate the texture every frame!
+            UnloadTexture(texture);
+            texture = LoadTextureFromImage(img);
             DrawTextureEx(texture, Vector2{0, 0}, 0.0f, pix_size, WHITE);
 #endif
             DrawText("Congrats! You created your first window!", 190, 200, 20, LIGHTGRAY);
