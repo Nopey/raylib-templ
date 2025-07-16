@@ -2,6 +2,7 @@
 
 #include "SimState.h"
 #include "SimSource.h"
+#include <cstring>
 
 int main(void)
 {
@@ -35,13 +36,27 @@ int main(void)
 
     InitWindow(800, 450, "raylib + FluidSim");
 
+    size_t imageDataSize = sim_texWidth * sim_texWidth * 3;
+    char *imageData = new char[imageDataSize];
+    std::memset(imageData, 0, imageDataSize);
+    Image img{
+        .data = imageData,
+        .width = sim_texWidth,
+        .height = sim_texWidth,
+        .mipmaps = 1,
+        .format = PIXELFORMAT_UNCOMPRESSED_R8G8B8,
+    };
+    Texture2D texture = LoadTextureFromImage(img);
+
     while (!WindowShouldClose())
     {
         sim_sources.UpdateSourcesDynamic();
         sim_state.SimulationStep(GetFrameTime());
 
         BeginDrawing();
-            int const pix_size = 3;
+            ClearBackground(RAYWHITE);
+            int const pix_size = 4;
+#if 0
             for(int x = 0; x < sim_texWidth; x++){
                 for(int y = 0; y < sim_texWidth; y++){
                     Color color;
@@ -52,10 +67,24 @@ int main(void)
                     DrawRectangle(pix_size * x, pix_size * (sim_texWidth - y), pix_size, pix_size, color);
                 }
             }
-            ClearBackground(RAYWHITE);
+#else
+            for(int x = 0; x < sim_texWidth; x++){
+                for(int y = 0; y < sim_texWidth; y++){
+                    int i = x + y * sim_texWidth;
+                    int i3 = (x + (sim_texWidth - y - 1) * sim_texWidth) * 3;
+                    imageData[i3] = sim_state.fields.temp[i] / 5.0f;
+                    imageData[i3 + 1] = sim_state.fields.dens[i] / 5.0f;
+                    // [i3 + 2] = 0;
+                }
+            }
+            UpdateTexture(texture, imageData);
+            DrawTextureEx(texture, Vector2{0, 0}, 0.0f, pix_size, WHITE);
+#endif
             DrawText("Congrats! You created your first window!", 190, 200, 20, LIGHTGRAY);
         EndDrawing();
     }
+
+    UnloadTexture(texture);
 
     CloseWindow();
 
