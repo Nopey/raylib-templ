@@ -438,18 +438,7 @@ void SimSource::Reset()
     temp = simState -> fields.temp_source;
 }
 
-// Non-class functions //
-
-// Generate normal distributed random variable
-float RandomNormal(float mean, float dev)
+float SimSource::RandomNormal(float mean, float dev)
 {
-    // Don't bother using generator if no deviation
-    if(dev == 0.0){
-        return mean;
-    }
-
-    // Initialize a generator and return a random value
-    static default_random_engine generator(time(0));
-    normal_distribution<float> distribution(mean, dev);
-    return distribution(generator);
+    return normal_distribution<float>(mean, dev)(generator);
 }

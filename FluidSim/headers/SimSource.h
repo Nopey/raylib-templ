@@ -135,9 +135,9 @@ class SimSource
         // List of sources
         std::list<SimSource::Source*> sources;
 
+        std::default_random_engine generator;
+
         // Protected methods
         void RemoveSource(Source* source);
+        float RandomNormal(float mean, float dev);
 };
-
-// Helper method for normal distribution generation
-float RandomNormal(float mean, float dev);
