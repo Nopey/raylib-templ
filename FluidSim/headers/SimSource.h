@@ -1,5 +1,5 @@
 #pragma once
-#include <list>
+#include <vector>
 #include <random>
 #include "SimState.h"
 
@@ -85,7 +85,7 @@ class SimSource
                 bool isDynamic = false;
 
                 // Arrays of sources
-                std::list<int> indices;
+                std::vector<int> indices;
                 float xVel;
                 float yVel;
                 float dens;
@@ -132,12 +132,11 @@ class SimSource
                 WindBoundary(int N, float speed);
                 float speed; };
 
-        // List of sources
-        std::list<SimSource::Source*> sources;
+        std::vector<SimSource::Source*> sources;
 
         std::default_random_engine generator;
 
         // Protected methods
-        void RemoveSource(Source* source);
+        void RemoveSource(int idx);
         float RandomNormal(float mean, float dev);
 };

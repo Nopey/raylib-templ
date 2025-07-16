@@ -300,10 +300,11 @@ SimSource::EnergySource::EnergySource(int N, float lengthScale, Shape shape, flo
 void SimSource::CreateWindBoundary(float speed)
 {
     // Remove any other wind boundaries
-    for(Source* source : sources){
+    for(int idx = 0; idx < sources.size(); idx++){
+        Source* source = sources[idx];
         if(source -> type == windBoundary){
-            RemoveSource(source);
-            return;
+            RemoveSource(idx);
+            idx--;
         }
     }
 
@@ -316,10 +317,11 @@ void SimSource::CreateWindBoundary(float speed)
 void SimSource::CreateWindBoundaryDynamic(float speed, float speedVar)
 {
     // Remove any other wind boundaries
-    for(Source* source : sources){
+    for(int idx = 0; idx < sources.size(); idx++){
+        Source* source = sources[idx];
         if(source -> type == windBoundary){
-            RemoveSource(source);
-            return;
+            RemoveSource(idx);
+            idx--;
         }
     }
 
@@ -353,11 +355,12 @@ SimSource::WindBoundary::WindBoundary(int N, float speed)
 
 
 // Remove source
-void SimSource::RemoveSource(Source* sourceToRemove)
+void SimSource::RemoveSource(int idx)
 {
     // Remove from source list
-        sources.remove(sourceToRemove);
-        delete sourceToRemove;
+    if(idx + 1 != sources.size())
+        std::swap(sources[idx], sources.back());
+    sources.pop_back();
 
     // Propogate change to simulation
     simState->ResetSources();
@@ -368,7 +371,8 @@ void SimSource::RemoveSource(Source* sourceToRemove)
 void SimSource::RemoveSourceAtPoint(float x, float y, float dist)
 {
     // Loop through sources
-    for(Source* source : sources){
+    for(int idx = 0; idx < sources.size(); idx++){
+        Source* source = sources[idx];
 
         // Check if point is inside source
         if(source -> type == windBoundary){
@@ -382,7 +386,7 @@ void SimSource::RemoveSourceAtPoint(float x, float y, float dist)
             switch(source->shape){
                 case circle:
                     if(xDist * xDist + yDist * yDist < rad * rad){
-                        RemoveSource(source);
+                        RemoveSource(idx);
                         return;
                     }
                     break;
@@ -390,21 +394,21 @@ void SimSource::RemoveSourceAtPoint(float x, float y, float dist)
                 case square:
                     if((xDist < rad) 
                     && (yDist < rad)){
-                        RemoveSource(source);
+                        RemoveSource(idx);
                         return;
                     }
                     break;
 
                 case diamond:
                     if(xDist + yDist < rad){
-                        RemoveSource(source);
+                        RemoveSource(idx);
                         return;
                     }
                     break;
 
                 case point:
                     if(xDist * xDist + yDist * yDist < rad * rad){
-                        RemoveSource(source);
+                        RemoveSource(idx);
                         return;
                     }
 
