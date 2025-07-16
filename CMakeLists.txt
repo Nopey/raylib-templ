@@ -26,6 +26,9 @@ endif()
 add_executable(mygame main.cpp)
 target_link_libraries(mygame PRIVATE raylib)
 
+add_subdirectory(FluidSim)
+target_link_libraries(mygame PRIVATE FluidSim)
+
 # Web Configurations
 if (${PLATFORM} STREQUAL "Web")
     set_target_properties(mygame PROPERTIES SUFFIX ".html") # Tell Emscripten to build an example.html file.
