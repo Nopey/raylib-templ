@@ -9,19 +9,6 @@
 // Structure to hold onto simulation properties and physical constants
 struct SimParams
 {
-    // Constructors
-    SimParams();
-    SimParams(float lengthScale, float timeScale, float viscosity, float diffusion);
-    SimParams(float lengthScale, float timeScale, float viscosity, float diffusion, 
-                float gravity, float airDensity, float massRatio);
-    SimParams(float lengthScale, float timeScale, float viscosity, float diffusion, 
-                float gravity, float airDensity, float massRatio, 
-                float airTemp, float diffTemp);
-    SimParams(float lengthScale, float timeScale, float viscosity, float diffusion, 
-                float gravity, float airDensity, float massRatio, 
-                float airTemp, float diffTemp,
-                float densDecay, float tempFactor, float tempDecay);
-
     // Reference tools for live modification
     enum ParamType { scale, fluid, background, decay };
     float*      FloatPointer (int paramNum, ParamType type);

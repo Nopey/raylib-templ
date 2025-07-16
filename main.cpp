@@ -9,25 +9,26 @@ int main(void)
     // https://github.com/HollowaySean/FluidSimulator/blob/2d71e00ca14076590034b5e943e9e67a5ae3d3d9/src/json/match.json
     int sim_resolution = 80;
     int sim_texWidth = sim_resolution + 2;
-    SimParams sim_params;
-    sim_params.lengthScale = 0.5f;
-    sim_params.timeScale = 1.0f;
-    sim_params.visc = 0.000018f;
-    sim_params.diff = 0.000028f;
-    sim_params.grav = -9.8f;
-    sim_params.airDens = 1.29235f;
-    sim_params.massRatio = 0.54f;
-    sim_params.airTemp = 300.0f;
-    sim_params.diffTemp = 0.0002338f;
-    sim_params.densDecay = 0.0f;
-    sim_params.tempFactor = 0.0f;
-    sim_params.tempDecay = 0.0f;
-    sim_params.closedBoundaries = false;
-    sim_params.advancedCoefficients = true;
-    sim_params.gravityOn = true;
-    sim_params.temperatureOn = true;
-    sim_params.solverSteps = 20;
-    SimState sim_state(sim_resolution, sim_params);
+    SimState sim_state(sim_resolution, SimParams{
+        .closedBoundaries = false,
+        .advancedCoefficients = true,
+        .gravityOn = true,
+        .temperatureOn = true,
+        .solverSteps = 20,
+
+        .lengthScale = 0.5f,
+        .timeScale = 1.0f,
+        .visc = 0.000018f,
+        .diff = 0.000028f,
+        .grav = -9.8f,
+        .airDens = 1.29235f,
+        .massRatio = 0.54f,
+        .airTemp = 300.0f,
+        .diffTemp = 0.0002338f,
+        .densDecay = 0.0f,
+        .tempFactor = 0.0f,
+        .tempDecay = 0.0f,
+    });
     SimSource sim_sources(&sim_state);
     sim_sources.CreateGasSourceDynamic(SimSource::circle, 25.0f, 2500.0f, 0.0f, -0.5f, 0.05f, 1.0f, 100.0f);
     sim_sources.CreateWindBoundaryDynamic(0.0f, 0.01f);
