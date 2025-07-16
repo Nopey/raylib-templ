@@ -2,7 +2,7 @@
 // Include statements
 #include "SimSource.h"
 #include <cmath>
-#include <iostream>
+#include <cassert>
 using namespace std;
 
 // Macros
@@ -135,6 +135,11 @@ void SimSource::Source::SetIndices(int N, Shape shape, float xCenter, float yCen
                         indices.push_back(indN(int(x), float(y), N));
                     }
                     break;
+
+                default:
+                    assert(0);
+                    break;
+
             }
         }
     }
