@@ -2,7 +2,50 @@
 
 #include "SimState.h"
 #include "SimSource.h"
-#include <cstring>
+
+#if defined(PLATFORM_DESKTOP)
+    #define GLSL_VERSION            330
+#else   // PLATFORM_ANDROID, PLATFORM_WEB
+    #define GLSL_VERSION            100
+#endif
+
+// TODO: break this off into its own file
+char const *fragmentShader =
+"#version 100\n"
+"\n"
+"precision highp float;\n"
+"\n"
+"// Input vertex attributes (from vertex shader)\n"
+"varying vec2 fragTexCoord;\n"
+//"varying vec4 fragColor;\n"
+"\n"
+"uniform sampler2D tempTex;\n"
+"uniform sampler2D densTex;\n"
+"\n"
+"// Input parameters\n"
+"uniform float bMod;\n"
+"const float sbConstant = 0.000000000001;\n"
+"\n"
+"void main()\n"
+"{\n"
+"    // Read texutres\n"
+"    float temp = texture2D(tempTex, fragTexCoord).x;\n"
+"    float dens = texture2D(densTex, fragTexCoord).x;\n"
+"\n"
+"    // Blackbody intensity\n"
+"    float intensity = sbConstant * temp * temp * temp * temp;\n"
+"\n"
+"    // BLackbody color temperature\n"
+"    float t = (temp - 1900.0) / (5400.0 - 1900.0);\n"
+"    float red = 1.0;\n"
+"    float green = (147.0 + (255.0 - 147.0) * t) / 255.0;\n"
+"    float blue = (41.0 + (251.0 - 41.0) * t) / 255.0;\n"
+"\n"
+"    // Final color as alpha mix of blackbody and density\n"
+"    vec3 outColor = dens * bMod * intensity * vec3(red, green, blue);\n"
+"    gl_FragColor = vec4(outColor, 1.0);\n"
+"}\n"
+;
 
 int main(void)
 {
@@ -36,17 +79,30 @@ int main(void)
 
     InitWindow(800, 450, "raylib + FluidSim");
 
-    size_t imageDataSize = sim_texWidth * sim_texWidth * 3;
-    char *imageData = new char[imageDataSize];
-    std::memset(imageData, 0, imageDataSize);
-    Image img{
-        .data = imageData,
+    Image temp_img{
+        .data = sim_state.fields.temp,
         .width = sim_texWidth,
         .height = sim_texWidth,
         .mipmaps = 1,
-        .format = PIXELFORMAT_UNCOMPRESSED_R8G8B8,
+        .format = PIXELFORMAT_UNCOMPRESSED_R32,
     };
-    Texture2D texture = LoadTextureFromImage(img);
+    Texture2D temp_texture = LoadTextureFromImage(temp_img);
+    Image dens_img{
+        .data = sim_state.fields.dens,
+        .width = sim_texWidth,
+        .height = sim_texWidth,
+        .mipmaps = 1,
+        .format = PIXELFORMAT_UNCOMPRESSED_R32,
+    };
+    Texture2D dens_texture = LoadTextureFromImage(dens_img);
+
+    Shader shader = LoadShaderFromMemory(nullptr, fragmentShader);
+
+    // Get variable (uniform) location on the shader to connect with the program
+    // NOTE: If uniform variable could not be found in the shader, function returns -1
+    int temp_location = GetShaderLocation(shader, "tempTex");
+    int dens_location = GetShaderLocation(shader, "densTex");
+    int brightness_location = GetShaderLocation(shader, "bMod");
 
     while (!WindowShouldClose())
     {
@@ -56,28 +112,34 @@ int main(void)
         BeginDrawing();
             ClearBackground(RAYWHITE);
             int const pix_size = 4;
-            for(int x = 0; x < sim_texWidth; x++){
-                for(int y = 0; y < sim_texWidth; y++){
-                    int i = x + y * sim_texWidth;
-                    int i3 = (x + (sim_texWidth - y - 1) * sim_texWidth) * 3;
-                    imageData[i3] = sim_state.fields.temp[i] / 5.0f;
-                    imageData[i3 + 1] = sim_state.fields.dens[i] / 5.0f;
-                    // [i3 + 2] = 0;
-                }
-            }
+
+            // TODO: move texture updates out of BeginDrawing() block
 #ifdef PLATFORM_WEB
             // HACK: raylib UpdateTexture doesn't work on web, so recreate the texture every frame!
-            UnloadTexture(texture);
-            texture = LoadTextureFromImage(img);
+            UnloadTexture(temp_texture);
+            temp_texture = LoadTextureFromImage(temp_img);
+            UnloadTexture(dens_texture);
+            dens_texture = LoadTextureFromImage(dens_img);
 #else
-            UpdateTexture(texture, imageData);
+            UpdateTexture(temp_texture, sim_state.fields.temp);
+            UpdateTexture(dens_texture, sim_state.fields.dens);
 #endif
-            DrawTextureEx(texture, Vector2{0, 0}, 0.0f, pix_size, WHITE);
+
+            BeginShaderMode(shader);
+                SetShaderValueTexture(shader, temp_location, temp_texture);
+                SetShaderValueTexture(shader, dens_location, dens_texture);
+                float brightness = 50.0f;
+                SetShaderValueV(shader, brightness_location, &brightness, SHADER_UNIFORM_FLOAT, 1);
+                DrawTexture(temp_texture, 0, 0, WHITE);
+            EndShaderMode();
+
             DrawText("Congrats! You created your first window!", 190, 200, 20, LIGHTGRAY);
         EndDrawing();
     }
 
-    UnloadTexture(texture);
+    UnloadShader(shader);       // Unload shader
+    UnloadTexture(temp_texture);
+    UnloadTexture(dens_texture);
 
     CloseWindow();
 
