@@ -5,15 +5,14 @@
 #include "SimState.h"
 
 // Includes and usings
-#include <iostream>
+#include <utility>
 #include <cmath>
 using namespace std;
 
-// Macros
-#define ind(i,j) ((i) + (N + 2)*(j))
-#define swap(x0, x) {float *tmp = x0; x0 = x; x = tmp;}
-
-
+int SimState::ind(int i, int j)
+{
+    return i + (N + 2)*j;
+}
 
 //// SIMSTATE PUBLIC METHODS ////
 

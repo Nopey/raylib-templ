@@ -130,4 +130,6 @@ class SimState
         void DensityStep(float);
         void VelocityStep(float);
         void TemperatureStep(float);
+
+        inline int ind(int i, int j);
 };

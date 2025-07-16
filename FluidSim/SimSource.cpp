@@ -5,8 +5,9 @@
 #include <cassert>
 using namespace std;
 
-// Macros
-#define indN(i,j,N) ((i) + ((N) + 2)*(j))
+static inline int indN(int i, int j, int N) {
+    return i + (N + 2)*j;
+}
 
 /// SIMSOURCES METHODS ///
 
