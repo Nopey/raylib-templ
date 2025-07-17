@@ -44,7 +44,7 @@ if(DEFINED CMAKE_SCRIPT_MODE_FILE)
 
         # NOTE: we append a nul byte, so plain-text files can be used as C strings.
         file(APPEND "${EMBED_CMAKE_C}" "// ${file}\n")
-        file(APPEND "${EMBED_CMAKE_C}" "unsigned char const ${file_varname}[] = \{${file_formatted_hexes} 0x00\};\n")
+        file(APPEND "${EMBED_CMAKE_C}" "unsigned char const ${file_varname}[] = {${file_formatted_hexes} 0x00};\n")
         file(APPEND "${EMBED_CMAKE_C}" "unsigned const ${file_varname}_size = sizeof(${file_varname}) - 1;\n\n")
 
         math(EXPR ARG_NUM "${ARG_NUM}+1")
