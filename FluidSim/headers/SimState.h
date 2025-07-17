@@ -14,25 +14,25 @@ struct SimParams
     std::string FloatTip     (int paramNum, ParamType type);
 
     // Options
-    bool closedBoundaries;
-    bool advancedCoefficients;
-    bool gravityOn;
-    bool temperatureOn;
-    int solverSteps;
+    bool closedBoundaries{true};
+    bool advancedCoefficients{false};
+    bool gravityOn{false};
+    bool temperatureOn{false};
+    int solverSteps{20};
 
     // Physical constants
-    float lengthScale;
-    float timeScale;
-    float visc;
-    float diff;
-    float grav;
-    float airDens;
-    float massRatio;
-    float airTemp;
-    float diffTemp;
-    float densDecay;
-    float tempFactor;
-    float tempDecay;
+    float lengthScale{1.f};
+    float timeScale{1.f};
+    float visc{0.f};
+    float diff{0.f};
+    float grav{0.f};
+    float airDens{0.f};
+    float massRatio{0.f};
+    float airTemp{0.f};
+    float diffTemp{0.f};
+    float densDecay{0.f};
+    float tempFactor{0.f};
+    float tempDecay{0.f};
 };
 
 // Structure to hold onto array pointers
