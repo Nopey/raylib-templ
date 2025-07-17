@@ -26,6 +26,8 @@ endif()
 add_executable(mygame)
 target_link_libraries(mygame PRIVATE raylib)
 
+set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT mygame)
+
 add_subdirectory(FluidSim)
 target_link_libraries(mygame PRIVATE FluidSim)
 
