@@ -22,7 +22,7 @@ int main(void)
                                            .timeScale = 1.0f,
                                            .visc = 0.000018f,
                                            .diff = 0.000028f,
-                                           .grav = -9.8f,
+                                           .grav = 9.8f,
                                            .airDens = 1.29235f,
                                            .massRatio = 0.54f,
                                            .airTemp = 300.0f,
@@ -32,7 +32,7 @@ int main(void)
                                            .tempDecay = 0.0f,
                                        });
     SimSource sim_sources(&sim_state);
-    sim_sources.CreateGasSourceDynamic(SimSource::circle, 25.0f, 2500.0f, 0.0f, -0.5f, 0.05f, 1.0f, 100.0f);
+    sim_sources.CreateGasSourceDynamic(SimSource::circle, 25.0f, 2500.0f, 0.0f, 0.5f, 0.05f, 1.0f, 100.0f);
     sim_sources.CreateWindBoundaryDynamic(0.0f, 0.01f);
 
     InitWindow(800, 450, "raylib + FluidSim");
