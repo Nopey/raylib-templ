@@ -65,8 +65,6 @@ int main(void)
     int dens_location = GetShaderLocation(shader, "densTex");
     int brightness_location = GetShaderLocation(shader, "bMod");
 
-    SetTargetFPS(30);
-
     while (!WindowShouldClose())
     {
         sim_sources.UpdateSourcesDynamic();
