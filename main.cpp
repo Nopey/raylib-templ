@@ -1,7 +1,7 @@
 #include "raylib.h"
 
-#include "SimState.h"
 #include "SimSource.h"
+#include "SimState.h"
 
 #include "embed.cmake.h"
 
@@ -12,25 +12,25 @@ int main(void)
     int sim_resolution = 80;
     int sim_texWidth = sim_resolution + 2;
     SimState sim_state(sim_resolution, SimParams{
-        .closedBoundaries = false,
-        .advancedCoefficients = true,
-        .gravityOn = true,
-        .temperatureOn = true,
-        .solverSteps = 20,
+                                           .closedBoundaries = false,
+                                           .advancedCoefficients = true,
+                                           .gravityOn = true,
+                                           .temperatureOn = true,
+                                           .solverSteps = 20,
 
-        .lengthScale = 0.5f,
-        .timeScale = 1.0f,
-        .visc = 0.000018f,
-        .diff = 0.000028f,
-        .grav = -9.8f,
-        .airDens = 1.29235f,
-        .massRatio = 0.54f,
-        .airTemp = 300.0f,
-        .diffTemp = 0.0002338f,
-        .densDecay = 0.0f,
-        .tempFactor = 0.0f,
-        .tempDecay = 0.0f,
-    });
+                                           .lengthScale = 0.5f,
+                                           .timeScale = 1.0f,
+                                           .visc = 0.000018f,
+                                           .diff = 0.000028f,
+                                           .grav = -9.8f,
+                                           .airDens = 1.29235f,
+                                           .massRatio = 0.54f,
+                                           .airTemp = 300.0f,
+                                           .diffTemp = 0.0002338f,
+                                           .densDecay = 0.0f,
+                                           .tempFactor = 0.0f,
+                                           .tempDecay = 0.0f,
+                                       });
     SimSource sim_sources(&sim_state);
     sim_sources.CreateGasSourceDynamic(SimSource::circle, 25.0f, 2500.0f, 0.0f, -0.5f, 0.05f, 1.0f, 100.0f);
     sim_sources.CreateWindBoundaryDynamic(0.0f, 0.01f);
@@ -54,7 +54,7 @@ int main(void)
     };
     Texture2D dens_texture = LoadTextureFromImage(dens_img);
 
-    Shader shader = LoadShaderFromMemory(nullptr, (char const*)fluid_frag_glsl);
+    Shader shader = LoadShaderFromMemory(nullptr, (char const *)fluid_frag_glsl);
 
     // Get variable (uniform) location on the shader to connect with the program
     // NOTE: If uniform variable could not be found in the shader, function returns -1
@@ -99,7 +99,7 @@ int main(void)
         EndDrawing();
     }
 
-    UnloadShader(shader);       // Unload shader
+    UnloadShader(shader); // Unload shader
     UnloadTexture(temp_texture);
     UnloadTexture(dens_texture);
 
