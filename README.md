@@ -26,7 +26,7 @@ emsdk activate latest
 
 Configure
 ```
-# again, remove the "Ninja Multi-Config" bit if on Windows.
+# Use -G"Ninja Multi-Config", even on Windows.
 cmake -S. -Bbuild-web -G"Ninja Multi-Config" --toolchain emsdk/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake -DPLATFORM=Web
 ```
 
