@@ -59,4 +59,5 @@ target_sources(mygame PRIVATE
 # file contents available via "embed.cmake.h" header.
 magnus_target_embed_files(mygame
   fluid.frag.glsl
+  bayer8x8.png
 )

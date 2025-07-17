@@ -38,6 +38,7 @@ if(DEFINED CMAKE_SCRIPT_MODE_FILE)
 
         file(READ "${file}" file_raw_hexes HEX)
         string(REGEX MATCHALL "([A-Fa-f0-9][A-Fa-f0-9])" SEPARATED_HEX ${file_raw_hexes})
+        set(file_formatted_hexes "")
         foreach (hex IN LISTS SEPARATED_HEX)
             string(APPEND file_formatted_hexes "0x${hex},")
         endforeach()

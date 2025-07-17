@@ -56,6 +56,10 @@ int main(void)
     Texture2D dens_texture = LoadTextureFromImage(dens_img);
     SetTextureFilter(dens_texture, TEXTURE_FILTER_BILINEAR);
 
+    Image bayer_img = LoadImageFromMemory(".png", bayer8x8_png, bayer8x8_png_size);
+    Texture2D bayer = LoadTextureFromImage(bayer_img);
+    SetTextureWrap(bayer, TEXTURE_WRAP_REPEAT);
+    SetTextureFilter(bayer, TEXTURE_FILTER_POINT);
 
     Shader shader = LoadShaderFromMemory(nullptr, (char const *)fluid_frag_glsl);
 
@@ -84,9 +88,9 @@ int main(void)
                 float brightness = 50.0f;
                 SetShaderValueV(shader, brightness_location, &brightness, SHADER_UNIFORM_FLOAT, 1);
                 DrawTexture(temp_texture, 0, 0, WHITE);
-                Rectangle source = { 0.0f, 0.0f, (float)temp_texture.width, (float)temp_texture.height };
+                Rectangle source = { 0.0f, 0.0f, (float)bayer.width, (float)bayer.height };
                 Rectangle dest = { 0.0f, 0.0f, (float)GetRenderWidth(), (float)GetRenderHeight() };
-                DrawTexturePro(temp_texture, source, dest, Vector2(0.0f, 0.0f), 0.0f, WHITE);
+                DrawTexturePro(bayer, source, dest, Vector2(0.0f, 0.0f), 0.0f, WHITE);
             }
             EndShaderMode();
 
@@ -99,6 +103,7 @@ int main(void)
     UnloadShader(shader); // Unload shader
     UnloadTexture(temp_texture);
     UnloadTexture(dens_texture);
+    UnloadTexture(bayer);
 
     CloseWindow();
 
