@@ -3,49 +3,13 @@
 #include "SimState.h"
 #include "SimSource.h"
 
+#include "embed.cmake.h"
+
 #if defined(PLATFORM_DESKTOP)
     #define GLSL_VERSION            330
 #else   // PLATFORM_ANDROID, PLATFORM_WEB
     #define GLSL_VERSION            100
 #endif
-
-// TODO: break this off into its own file
-char const *fragmentShader =
-"#version 100\n"
-"\n"
-"precision highp float;\n"
-"\n"
-"// Input vertex attributes (from vertex shader)\n"
-"varying vec2 fragTexCoord;\n"
-//"varying vec4 fragColor;\n"
-"\n"
-"uniform sampler2D tempTex;\n"
-"uniform sampler2D densTex;\n"
-"\n"
-"// Input parameters\n"
-"uniform float bMod;\n"
-"const float sbConstant = 0.000000000001;\n"
-"\n"
-"void main()\n"
-"{\n"
-"    // Read texutres\n"
-"    float temp = texture2D(tempTex, fragTexCoord).x;\n"
-"    float dens = texture2D(densTex, fragTexCoord).x;\n"
-"\n"
-"    // Blackbody intensity\n"
-"    float intensity = sbConstant * temp * temp * temp * temp;\n"
-"\n"
-"    // BLackbody color temperature\n"
-"    float t = (temp - 1900.0) / (5400.0 - 1900.0);\n"
-"    float red = 1.0;\n"
-"    float green = (147.0 + (255.0 - 147.0) * t) / 255.0;\n"
-"    float blue = (41.0 + (251.0 - 41.0) * t) / 255.0;\n"
-"\n"
-"    // Final color as alpha mix of blackbody and density\n"
-"    vec3 outColor = dens * bMod * intensity * vec3(red, green, blue);\n"
-"    gl_FragColor = vec4(outColor, 1.0);\n"
-"}\n"
-;
 
 int main(void)
 {
@@ -96,7 +60,7 @@ int main(void)
     };
     Texture2D dens_texture = LoadTextureFromImage(dens_img);
 
-    Shader shader = LoadShaderFromMemory(nullptr, fragmentShader);
+    Shader shader = LoadShaderFromMemory(nullptr, (char const*)fluid_frag_glsl);
 
     // Get variable (uniform) location on the shader to connect with the program
     // NOTE: If uniform variable could not be found in the shader, function returns -1

@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.8)
+cmake_minimum_required(VERSION 3.20)
 project(test CXX)
 set(CMAKE_CXX_STANDARD 17)
 #set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS YES) # probably don't need this? but might
@@ -23,8 +23,11 @@ if (NOT raylib_FOUND) # If there's none, fetch and build raylib
   endif()
 endif()
 
-add_executable(mygame main.cpp)
+add_executable(mygame)
 target_link_libraries(mygame PRIVATE raylib)
+target_sources(mygame PRIVATE
+  main.cpp
+)
 
 add_subdirectory(FluidSim)
 target_link_libraries(mygame PRIVATE FluidSim)
@@ -34,3 +37,7 @@ if (${PLATFORM} STREQUAL "Web")
   set_target_properties(mygame PROPERTIES SUFFIX ".html") # Tell Emscripten to build an example.html file.
   set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -s USE_GLFW=3 -s ASSERTIONS=1 -s WASM=1 -s ASYNCIFY -s GL_ENABLE_GET_PROC_ADDRESS=1")
 endif()
+
+include(embed.cmake)
+magnus_target_embed_files(mygame fluid.frag.glsl)
+
