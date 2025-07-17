@@ -25,9 +25,6 @@ endif()
 
 add_executable(mygame)
 target_link_libraries(mygame PRIVATE raylib)
-target_sources(mygame PRIVATE
-  main.cpp
-)
 
 add_subdirectory(FluidSim)
 target_link_libraries(mygame PRIVATE FluidSim)
@@ -39,5 +36,20 @@ if (${PLATFORM} STREQUAL "Web")
 endif()
 
 include(embed.cmake)
-magnus_target_embed_files(mygame fluid.frag.glsl)
 
+#
+#
+# # # # # # # #
+# Hey You! Yeah, you..
+# Add more source files below!
+# # # # # # # #
+#
+#
+target_sources(mygame PRIVATE
+  main.cpp
+)
+
+# file contents available via "embed.cmake.h" header.
+magnus_target_embed_files(mygame
+  fluid.frag.glsl
+)
