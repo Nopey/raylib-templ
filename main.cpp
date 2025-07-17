@@ -45,6 +45,7 @@ int main(void)
         .format = PIXELFORMAT_UNCOMPRESSED_R32,
     };
     Texture2D temp_texture = LoadTextureFromImage(temp_img);
+    SetTextureFilter(temp_texture, TEXTURE_FILTER_BILINEAR);
     Image dens_img{
         .data = sim_state.fields.dens,
         .width = sim_texWidth,
@@ -53,6 +54,8 @@ int main(void)
         .format = PIXELFORMAT_UNCOMPRESSED_R32,
     };
     Texture2D dens_texture = LoadTextureFromImage(dens_img);
+    SetTextureFilter(dens_texture, TEXTURE_FILTER_BILINEAR);
+
 
     Shader shader = LoadShaderFromMemory(nullptr, (char const *)fluid_frag_glsl);
 
@@ -69,24 +72,12 @@ int main(void)
         sim_sources.UpdateSourcesDynamic();
         sim_state.SimulationStep(GetFrameTime());
 
+        UpdateTexture(temp_texture, sim_state.fields.temp);
+        UpdateTexture(dens_texture, sim_state.fields.dens);
+
         BeginDrawing();
         {
             ClearBackground(DARKPURPLE);
-
-            // TODO: move texture updates out of BeginDrawing() block
-#ifdef PLATFORM_WEB
-            // HACK: raylib UpdateTexture doesn't work on web, so recreate the texture every frame!
-            UnloadTexture(temp_texture);
-            temp_texture = LoadTextureFromImage(temp_img);
-            UnloadTexture(dens_texture);
-            dens_texture = LoadTextureFromImage(dens_img);
-#else
-            UpdateTexture(temp_texture, sim_state.fields.temp);
-            UpdateTexture(dens_texture, sim_state.fields.dens);
-#endif
-            // TODO: move texture (re)creation into a method, and put texture filtering there too
-            SetTextureFilter(temp_texture, TEXTURE_FILTER_BILINEAR);
-            SetTextureFilter(dens_texture, TEXTURE_FILTER_BILINEAR);
 
             BeginShaderMode(shader);
             {
