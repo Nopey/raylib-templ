@@ -69,8 +69,7 @@ int main(void)
 
         BeginDrawing();
         {
-            ClearBackground(RAYWHITE);
-            int const pix_size = 4;
+            ClearBackground(DARKPURPLE);
 
             // TODO: move texture updates out of BeginDrawing() block
 #ifdef PLATFORM_WEB
@@ -83,6 +82,9 @@ int main(void)
             UpdateTexture(temp_texture, sim_state.fields.temp);
             UpdateTexture(dens_texture, sim_state.fields.dens);
 #endif
+            // TODO: move texture (re)creation into a method, and put texture filtering there too
+            SetTextureFilter(temp_texture, TEXTURE_FILTER_BILINEAR);
+            SetTextureFilter(dens_texture, TEXTURE_FILTER_BILINEAR);
 
             BeginShaderMode(shader);
             {
@@ -91,10 +93,13 @@ int main(void)
                 float brightness = 50.0f;
                 SetShaderValueV(shader, brightness_location, &brightness, SHADER_UNIFORM_FLOAT, 1);
                 DrawTexture(temp_texture, 0, 0, WHITE);
+                Rectangle source = { 0.0f, 0.0f, (float)temp_texture.width, (float)temp_texture.height };
+                Rectangle dest = { 0.0f, 0.0f, (float)GetRenderWidth(), (float)GetRenderHeight() };
+                DrawTexturePro(temp_texture, source, dest, Vector2(0.0f, 0.0f), 0.0f, WHITE);
             }
             EndShaderMode();
 
-            DrawText("Congrats! You created your first window!", 190, 200, 20, LIGHTGRAY);
+            DrawText("look, a match!", 190, 200, 20, LIGHTGRAY);
         }
         EndDrawing();
     }
