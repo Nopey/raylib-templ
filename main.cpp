@@ -68,6 +68,7 @@ int main(void)
         sim_state.SimulationStep(GetFrameTime());
 
         BeginDrawing();
+        {
             ClearBackground(RAYWHITE);
             int const pix_size = 4;
 
@@ -84,14 +85,17 @@ int main(void)
 #endif
 
             BeginShaderMode(shader);
+            {
                 SetShaderValueTexture(shader, temp_location, temp_texture);
                 SetShaderValueTexture(shader, dens_location, dens_texture);
                 float brightness = 50.0f;
                 SetShaderValueV(shader, brightness_location, &brightness, SHADER_UNIFORM_FLOAT, 1);
                 DrawTexture(temp_texture, 0, 0, WHITE);
+            }
             EndShaderMode();
 
             DrawText("Congrats! You created your first window!", 190, 200, 20, LIGHTGRAY);
+        }
         EndDrawing();
     }
 
