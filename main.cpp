@@ -62,6 +62,8 @@ int main(void)
     int dens_location = GetShaderLocation(shader, "densTex");
     int brightness_location = GetShaderLocation(shader, "bMod");
 
+    SetTargetFPS(30);
+
     while (!WindowShouldClose())
     {
         sim_sources.UpdateSourcesDynamic();
@@ -100,6 +102,7 @@ int main(void)
             EndShaderMode();
 
             DrawText("look, a match!", 190, 200, 20, LIGHTGRAY);
+            DrawFPS(700, 0);
         }
         EndDrawing();
     }
